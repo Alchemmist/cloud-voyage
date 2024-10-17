@@ -1,0 +1,35 @@
+services:
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - default
+
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./frontend
+    ports:
+      - 3000:3000
+    networks:
+      - default
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    restart: always
+
+networks:
+  default:
+    driver: bridge
+    name: cloude_voyage
