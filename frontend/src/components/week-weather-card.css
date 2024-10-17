@@ -1,0 +1,39 @@
+.weather-container {
+  width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.main-weather-card {
+  background-color: #f0f8ff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.weekly-forecast {
+  margin-top: 10px;
+}
+
+.day-forecast-card {
+  background-color: #e0f7fa;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
