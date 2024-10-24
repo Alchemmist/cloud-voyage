@@ -8,6 +8,6 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
-CMD ["yarn", "run", "dev"]
+CMD ["yarn", "dev", "--host"]
 EXPOSE 3000
 
