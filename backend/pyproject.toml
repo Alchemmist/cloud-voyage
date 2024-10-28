@@ -3,13 +3,14 @@ name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["Alchemmist <anton.ingrish@gmail.com>"]
-readme = "README.md"
+packages = [{include = "cloud_voyage"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
 flask = "^3.0.3"
 pytest = "^8.3.3"
-
+pydantic = "^2.9.2"
+flask-cors = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]

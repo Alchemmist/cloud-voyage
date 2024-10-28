@@ -5,13 +5,12 @@ ENV PYTHONFAULTHANDLER=1 \
   PYTHONHASHSEED=random \
   PIP_NO_CACHE_DIR=off \
   PIP_DISABLE_PIP_VERSION_CHECK=on \
-  PIP_DEFAULT_TIMEOUT=100 \
-  POETRY_VERSION=1.6.1
+  PIP_DEFAULT_TIMEOUT=100 
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
-RUN pip install --no-cache-dir "poetry==$POETRY_VERSION"
+RUN pip install --no-cache-dir "poetry"
 
 COPY pyproject.toml poetry.lock ./
 RUN poetry config --no-cache virtualenvs.create false && poetry install --no-cache --no-root --no-interaction --no-ansi --only main
@@ -19,5 +18,5 @@ RUN poetry config --no-cache virtualenvs.create false && poetry install --no-cac
 COPY . .
 RUN poetry install --no-cache --no-interaction --no-ansi --only main
 
-CMD ["/bin/sh", "-c", "poetry install ; poetry run python cloud_voyage"]
+CMD ["/bin/sh", "-c", "poetry run python cloud_voyage"]
 

@@ -1,13 +1,17 @@
+import logging
+from cloud_voyage.handlers import weather_forecast_blueprint
 from flask import Flask
+from flask_cors import CORS
 
 
 app = Flask(__name__)
-
-
-@app.route("/")
-def hello_world():
-    return "<p>VVVVVVVV Hello, World!</p>"
+CORS(app)
 
 
 if __name__ == '__main__':
-  app.run(host="0.0.0.0", port=80, debug=True)
+    logging.basicConfig(level=logging.INFO)
+
+    with app.app_context():
+        app.register_blueprint(weather_forecast_blueprint)
+
+    app.run(host="0.0.0.0", port=5000)
