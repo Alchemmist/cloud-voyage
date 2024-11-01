@@ -1,5 +1,5 @@
 import logging
-from cloud_voyage.handlers import weather_forecast_blueprint
+from cloud_voyage.routes import weather_forecast_blueprint
 from flask import Flask
 from flask_cors import CORS
 

@@ -33,4 +33,4 @@ def five_days_forecast():
         else "Bad"
     )
 
-    return json.dumps({"temperature": temp, "description": about})
+    return json.dumps({"temperature": f"{temp:.1f}", "description": about})

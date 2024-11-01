@@ -45,12 +45,16 @@ def parse_accu_response(
     for weather in main_parse:
         w_date = datetime.strptime(weather["Date"].split("T")[0], "%Y-%m-%d")
         if w_date == date:
+
+            with open("test.txt", mode="w") as f:
+                f.write(json.dumps(weather))
+
             return (
                 fahrenheit_to_celsius(
                     weather["Day"]["WetBulbTemperature"]["Average"]["Value"]
                 ),
-                int(weather["HasPrecipitation"]) * 100,
-                int(weather["RelativeHumidity"]),
-                mih_to_ms(weather["Wind"]["Speed"]["Imperial"]["Value"]),
+                int(weather["Day"]["HasPrecipitation"]) * 100,
+                int(weather["Day"]["RelativeHumidity"]["Average"]),
+                mih_to_ms(weather["Day"]["Wind"]["Speed"]["Value"]),
                 str(weather["Day"]["ShortPhrase"]),
             )
