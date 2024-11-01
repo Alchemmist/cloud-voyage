@@ -14,14 +14,29 @@ def five_days_forecast():
     if (date := request.args.get("date")) is None:
         return {"status": "error", "message": "date query param must be provided"}
 
-    if not (parse_data := api.get_forecaset(location, date)):
+    parse_data = api.get_forecast(location, date)
+    if not (coordinates := parse_data[0]):
         return {
             "status": "not_found",
-            "message": "can't find information to this date or for this location",
+            "message": "can't find this location",
         }
 
-    temp, precipitation_probability_percent, humidity_percent, wind_speed_ms, about = parse_data
-    
+    if not (metrics := parse_data[1]):
+        return {
+            "status": "no_data",
+            "message": "can't find information to this date or for this location",
+            "lat": coordinates[0],
+            "lon": coordinates[1],
+        }
+
+    (
+        temp,
+        precipitation_probability_percent,
+        humidity_percent,
+        wind_speed_ms,
+        about,
+    ) = metrics
+
     about = (
         "Good"
         if (
@@ -33,4 +48,15 @@ def five_days_forecast():
         else "Bad"
     )
 
-    return json.dumps({"temperature": f"{temp:.1f}", "description": about})
+    return json.dumps(
+        {
+            "status": "success",
+            "temperature": f"{temp:.1f}",
+            "description": about,
+            "humidity": humidity_percent,
+            "wind_speed": wind_speed_ms,
+            "rain_percent": precipitation_probability_percent,
+            "lat": coordinates[0],
+            "lon": coordinates[1],
+        }
+    )

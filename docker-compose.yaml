@@ -28,6 +28,32 @@ services:
       - .env
     restart: always
 
+  bot:
+    container_name: bot
+    build: 
+      context: ./bot
+    networks:
+      - default
+    volumes:
+      - ./bot:/app
+    env_file:
+      - .env
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      - default
+    volumes:
+      - ./data:/data              
+      - ./redis.conf:/usr/local/etc/redis/redis.conf 
+    ports:
+      - 6379:6379
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"] 
+    restart: always
+
+
 networks:
   default:
     driver: bridge

@@ -1,0 +1,7 @@
+requirepass <your_pass_word>
+
+save 300 1  
+save 100 10    
+save 60 10000  
+dir /data   
+dbfilename dump.rdb 
