@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from redis.typing import ResponseT
 from cloud_voyage import cache
 import requests
 import urllib.parse
@@ -6,41 +8,59 @@ import json
 import os
 
 
+def date_alredy_cached(date: datetime, cache: ResponseT) -> bool:
+    cached_dates = []
+    for i in json.loads(cache)["DailyForecasts"]: # type: ignore
+        cached_dates.append(datetime.strptime(i["Date"].split("T")[0], "%Y-%m-%d"))
+    return date in cached_dates
+
+
 def get_forecast(location, date) -> tuple[tuple | None, tuple | None]:
     date_obj = datetime.strptime(date, "%Y-%m-%d")
 
-    cache_key = (
-        f"weather:{location}"  # Включите дату в ключ кэша для уникальности
-    )
+    cache_key = f"weather:{location}"  # Включите дату в ключ кэша для уникальности
     cached_data = cache.get(cache_key)
 
-    if cached_data:
+    if cached_data and date_alredy_cached(date_obj, cached_data): 
         # Если данные найдены в кэше, возвращаем их
         return parse_cached_response(cached_data, date_obj)
 
     # Если данных в кэше нет, продолжаем с запросом к AccuWeather
-    url = f"http://dataservice.accuweather.com/locations/v1/cities/search"
+    if "," in location and "." in location:
+        url = (
+            f"http://dataservice.accuweather.com/locations/v1/cities/geoposition/search"
+        )
+        response_base_link = requests.get(
+            url,
+            params={
+                "apikey": os.getenv("ACCU_WEATHER_API_KEY"),
+                "q": str(location),
+                "details": False,
+                "offset": 1,
+            },
+        )
+        text_base = dict(json.loads(response_base_link.text))
+    else:
+        url = f"http://dataservice.accuweather.com/locations/v1/cities/search"
+        response_base_link = requests.get(
+            url,
+            params={
+                "apikey": os.getenv("ACCU_WEATHER_API_KEY"),
+                "q": urllib.parse.quote(str(location)),
+                "details": False,
+                "offset": 1,
+            },
+        )
+        text_base = dict(list(json.loads(response_base_link.text))[0])
 
-    response_base_link = requests.get(
-        url,
-        params={
-            "apikey": os.getenv("ACCU_WEATHER_API_KEY"),
-            "q": urllib.parse.quote(str(location)),
-            "details": False,
-            "offset": 1,
-        },
-    )
-    try:
-        text_base = list(json.loads(response_base_link.text))[0]
-        if isinstance(text_base, str):
-            raise Exception
-    except Exception:
+    if "Key" not in text_base:
         return None, None
 
     coordinates = (
         text_base["GeoPosition"]["Latitude"],
         text_base["GeoPosition"]["Longitude"],
     )
+
     url = (
         f"http://dataservice.accuweather.com/forecasts/v1/daily/5day/{text_base['Key']}"
     )
@@ -49,7 +69,6 @@ def get_forecast(location, date) -> tuple[tuple | None, tuple | None]:
     )
 
     forecast = dict(json.loads(response_data_link.text))
-
 
     # Кэшируем полученные данные перед возвратом
     forecast["GeoPosition"] = {"Latitude": coordinates[0], "Longitude": coordinates[1]}

@@ -211,7 +211,7 @@ def update_route(add_clicks, delete_clicks, selected_metric, location, date_str)
                 html.Strong(
                     f"{point['weather']['location']} on {point['weather']['date']}: "
                 ),
-                f"{point['weather']['temperature']}°C, {point['weather']['description']}",
+                f"{point['weather']['temperature']}, {point['weather']['description']}",
             ],
             className="mb-3",
         )

@@ -25,6 +25,7 @@ def five_days_forecast():
         return {
             "status": "no_data",
             "message": "can't find information to this date or for this location",
+            "date": date,
             "lat": coordinates[0],
             "lon": coordinates[1],
         }
@@ -51,12 +52,13 @@ def five_days_forecast():
     return json.dumps(
         {
             "status": "success",
-            "temperature": f"{temp:.1f}",
+            "temperature": f"{temp:.1f}°C",
             "description": about,
             "humidity": humidity_percent,
-            "wind_speed": wind_speed_ms,
+            "wind_speed": f"{wind_speed_ms:.1f}",
             "rain_percent": precipitation_probability_percent,
             "lat": coordinates[0],
             "lon": coordinates[1],
+            "date": date,
         }
     )
