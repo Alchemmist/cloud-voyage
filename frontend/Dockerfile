@@ -10,7 +10,7 @@ ENV PYTHONFAULTHANDLER=1 \
 WORKDIR /app
 
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
-RUN pip install --no-cache-dir "poetry"
+RUN pip install --upgrade pip && pip install --no-cache-dir poetry
 
 COPY pyproject.toml poetry.lock ./
 RUN poetry config --no-cache virtualenvs.create false && poetry install --no-cache --no-root --no-interaction --no-ansi --only main
